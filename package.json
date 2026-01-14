@@ -1,6 +1,7 @@
 {
   "name": "returnfy",
   "version": "1.0.0",
+  "type": "module",
   "description": "Multi-store return request portal with Shopify integration",
   "scripts": {
     "dev": "vercel dev",
