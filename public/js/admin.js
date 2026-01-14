@@ -148,9 +148,6 @@ function updateStoreFilter() {
 }
 
 function openAddStoreModal() {
-  document.getElementById('newStoreName').value = '';
-  document.getElementById('newStoreDomain').value = '';
-  document.getElementById('newStoreToken').value = '';
   openModal('storeModal');
 }
 
@@ -476,6 +473,25 @@ function closeModal(modalId) {
 
 document.addEventListener('DOMContentLoaded', () => {
   checkAuth();
+  
+  // Check for store connection success
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('store_connected') === 'true') {
+    setTimeout(() => {
+      alert('Store connected successfully via OAuth!');
+      // Clean URL
+      window.history.replaceState({}, document.title, '/admin');
+      // Refresh stores list
+      showSection('stores');
+    }, 500);
+  }
+  
+  if (urlParams.get('setup_error')) {
+    setTimeout(() => {
+      alert('Error connecting store: ' + decodeURIComponent(urlParams.get('setup_error')));
+      window.history.replaceState({}, document.title, '/admin');
+    }, 500);
+  }
   
   // Enter key on password field
   document.getElementById('adminPassword').addEventListener('keypress', (e) => {
