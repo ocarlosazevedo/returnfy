@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup Shopify Store - Returnfy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); 
+      color: #e2e8f0; 
+      min-height: 100vh; 
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container { width: 100%; max-width: 560px; }
+    
+    .card { 
+      background: rgba(255,255,255,0.03); 
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.08); 
+      border-radius: 20px; 
+      padding: 40px; 
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    }
+    
+    .card-header { text-align: center; margin-bottom: 32px; }
+    .logo { font-size: 2rem; font-weight: 700; color: #00d4aa; margin-bottom: 8px; }
+    .card-title { font-size: 1.5rem; font-weight: 600; color: #fff; margin-bottom: 8px; }
+    .card-subtitle { font-size: 0.9rem; color: #94a3b8; }
+    
+    .steps { 
+      background: rgba(0,212,170,0.08); 
+      border: 1px solid rgba(0,212,170,0.2); 
+      border-radius: 12px; 
+      padding: 20px; 
+      margin-bottom: 28px; 
+    }
+    .steps-title { 
+      font-size: 0.85rem; 
+      font-weight: 600; 
+      color: #00d4aa; 
+      margin-bottom: 14px; 
+      display: flex; 
+      align-items: center; 
+      gap: 8px; 
+    }
+    .steps-list { list-style: none; font-size: 0.85rem; color: #94a3b8; }
+    .steps-list li { padding: 8px 0; padding-left: 24px; position: relative; line-height: 1.5; }
+    .steps-list li::before { 
+      content: attr(data-step); 
+      position: absolute; 
+      left: 0; 
+      color: #00d4aa; 
+      font-weight: 600;
+      width: 18px;
+    }
+    .steps-list a { color: #00d4aa; text-decoration: none; font-weight: 500; }
+    .steps-list a:hover { text-decoration: underline; }
+    .steps-list code { 
+      background: rgba(0,0,0,0.3); 
+      padding: 2px 8px; 
+      border-radius: 4px; 
+      font-size: 0.8rem; 
+      color: #60a5fa; 
+      word-break: break-all;
+      display: inline-block;
+      margin-top: 4px;
+    }
+    .steps-list strong { color: #fff; }
+    
+    .form-group { margin-bottom: 20px; }
+    .form-label { 
+      display: block; 
+      font-size: 0.85rem; 
+      font-weight: 500; 
+      color: #94a3b8; 
+      margin-bottom: 8px; 
+    }
+    .form-input { 
+      width: 100%; 
+      padding: 14px 16px; 
+      background: rgba(0,0,0,0.3); 
+      border: 1px solid rgba(255,255,255,0.1); 
+      border-radius: 10px; 
+      color: #fff; 
+      font-size: 0.95rem; 
+      transition: all 0.2s; 
+      font-family: inherit;
+    }
+    .form-input:focus { 
+      outline: none; 
+      border-color: #00d4aa; 
+      box-shadow: 0 0 0 3px rgba(0,212,170,0.15); 
+    }
+    .form-input::placeholder { color: #64748b; }
+    .form-hint { font-size: 0.75rem; color: #64748b; margin-top: 6px; }
+    
+    .input-password-wrapper { position: relative; }
+    .input-password-wrapper .form-input { padding-right: 48px; }
+    .toggle-password { 
+      position: absolute; 
+      right: 12px; 
+      top: 50%;
+      transform: translateY(-50%);
+      background: none; 
+      border: none; 
+      cursor: pointer; 
+      padding: 4px; 
+      display: flex;
+      color: #64748b;
+      transition: color 0.2s;
+    }
+    .toggle-password:hover { color: #00d4aa; }
+    .toggle-password svg { width: 20px; height: 20px; }
+    
+    .btn { 
+      width: 100%; 
+      padding: 16px; 
+      border: none; 
+      border-radius: 10px; 
+      font-size: 1rem; 
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: all 0.2s; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 10px;
+      font-family: inherit;
+    }
+    .btn-primary { 
+      background: linear-gradient(135deg, #00d4aa 0%, #00b894 100%); 
+      color: #000; 
+    }
+    .btn-primary:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 10px 25px rgba(0,212,170,0.35); 
+    }
+    .btn-primary:disabled { 
+      opacity: 0.5; 
+      cursor: not-allowed; 
+      transform: none; 
+      box-shadow: none; 
+    }
+    .btn svg { width: 20px; height: 20px; }
+    
+    .alert { 
+      padding: 14px 18px; 
+      border-radius: 10px; 
+      font-size: 0.9rem; 
+      margin-bottom: 20px; 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+    }
+    .alert svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .alert-success { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+    .alert-error { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+    .alert-info { background: rgba(59,130,246,0.15); color: #3b82f6; border: 1px solid rgba(59,130,246,0.3); }
+    
+    .back-link { text-align: center; margin-top: 24px; }
+    .back-link a { 
+      color: #64748b; 
+      text-decoration: none; 
+      font-size: 0.9rem; 
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .back-link a:hover { color: #00d4aa; }
+    .back-link svg { width: 16px; height: 16px; }
+    
+    .spinner { 
+      width: 20px; 
+      height: 20px; 
+      border: 2px solid transparent; 
+      border-top-color: currentColor; 
+      border-radius: 50%; 
+      animation: spin 0.8s linear infinite; 
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .success-state { text-align: center; }
+    .success-icon { 
+      width: 80px; 
+      height: 80px; 
+      background: rgba(34,197,94,0.15); 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      margin: 0 auto 24px; 
+    }
+    .success-icon svg { width: 40px; height: 40px; color: #22c55e; }
+    
+    @media (max-width: 500px) { 
+      .card { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <!-- Success State -->
+      <div id="successState" style="display:none;" class="success-state">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <div class="card-header">
+          <h1 class="card-title">Store Connected!</h1>
+          <p class="card-subtitle">Your Shopify store has been successfully integrated via OAuth</p>
+        </div>
+        <a href="/admin" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          Go to Dashboard
+        </a>
+      </div>
+      
+      <!-- Form State -->
+      <div id="formState">
+        <div class="card-header">
+          <div class="logo">Returnfy</div>
+          <h1 class="card-title">Connect Shopify Store</h1>
+          <p class="card-subtitle">Setup via Custom App (Dev Dashboard)</p>
+        </div>
+        
+        <div class="steps">
+          <div class="steps-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            How to get credentials
+          </div>
+          <ol class="steps-list">
+            <li data-step="1.">Go to <a href="https://dev.shopify.com" target="_blank">dev.shopify.com</a></li>
+            <li data-step="2.">Click <strong>Create an app</strong> → <strong>Start from Dev Dashboard</strong></li>
+            <li data-step="3.">In <strong>App URL</strong>, add: <code>https://returnfy.vercel.app</code></li>
+            <li data-step="4.">In <strong>Scopes</strong>, add: <code>read_orders, read_products, read_customers</code></li>
+            <li data-step="5.">Click <strong>Release</strong> then <strong>Install</strong> on your store</li>
+            <li data-step="6.">Copy <strong>Client ID</strong> and <strong>Client Secret</strong> from Settings</li>
+          </ol>
+        </div>
+        
+        <div id="alertContainer"></div>
+        
+        <form id="integrationForm" autocomplete="off">
+          <div class="form-group">
+            <label class="form-label">Store Name</label>
+            <input type="text" class="form-input" id="storeName" placeholder="My Store Brazil">
+            <p class="form-hint">A friendly name to identify this store</p>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Shopify Domain *</label>
+            <input type="text" class="form-input" id="domain" placeholder="mystore.myshopify.com" required>
+            <p class="form-hint">Your .myshopify.com domain (not custom domain)</p>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Client ID *</label>
+            <input type="text" class="form-input" id="clientId" placeholder="Ex: 6ad456138185c8e4038116b809ac870e" required autocomplete="off">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Client Secret *</label>
+            <div class="input-password-wrapper">
+              <input type="password" class="form-input" id="clientSecret" placeholder="Ex: d29e59a6b9b3f7d6..." required autocomplete="off">
+              <button type="button" class="toggle-password" onclick="togglePassword()">
+                <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <svg id="eyeOffIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary" id="submitBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            Connect Store
+          </button>
+        </form>
+        
+        <div class="back-link">
+          <a href="/admin">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Back to Dashboard
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Check URL params for status
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('store_connected') === 'true') {
+      document.getElementById('formState').style.display = 'none';
+      document.getElementById('successState').style.display = 'block';
+    }
+    
+    if (urlParams.get('setup_error')) {
+      showAlert(decodeURIComponent(urlParams.get('setup_error')), 'error');
+    }
+    
+    function showAlert(message, type) {
+      const icons = {
+        success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>',
+        error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>',
+        info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>'
+      };
+      
+      document.getElementById('alertContainer').innerHTML = `
+        <div class="alert alert-${type}">
+          ${icons[type]}
+          <span>${message}</span>
+        </div>
+      `;
+    }
+    
+    function togglePassword() {
+      const input = document.getElementById('clientSecret');
+      const eyeIcon = document.getElementById('eyeIcon');
+      const eyeOffIcon = document.getElementById('eyeOffIcon');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        eyeIcon.style.display = 'none';
+        eyeOffIcon.style.display = 'block';
+      } else {
+        input.type = 'password';
+        eyeIcon.style.display = 'block';
+        eyeOffIcon.style.display = 'none';
+      }
+    }
+    
+    // Auto-format domain
+    document.getElementById('domain').addEventListener('blur', function() {
+      let val = this.value.trim().toLowerCase();
+      val = val.replace(/^https?:\/\//, '');
+      val = val.replace(/\/$/, '');
+      if (val && !val.includes('.myshopify.com')) {
+        val = val + '.myshopify.com';
+      }
+      this.value = val;
+    });
+    
+    document.getElementById('integrationForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const btn = document.getElementById('submitBtn');
+      const originalContent = btn.innerHTML;
+      
+      // Get values
+      const storeName = document.getElementById('storeName').value.trim();
+      const domain = document.getElementById('domain').value.trim();
+      const clientId = document.getElementById('clientId').value.trim();
+      const clientSecret = document.getElementById('clientSecret').value.trim();
+      
+      // Validate
+      if (!domain || !clientId || !clientSecret) {
+        showAlert('Please fill in all required fields', 'error');
+        return;
+      }
+      
+      // Get admin token
+      const adminToken = localStorage.getItem('returnfy_admin_token');
+      if (!adminToken) {
+        showAlert('Please login as admin first', 'error');
+        setTimeout(() => window.location.href = '/admin', 1500);
+        return;
+      }
+      
+      // Loading state
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner"></div> Connecting...';
+      
+      try {
+        const response = await fetch('/api/shopify/custom-app/connect', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + adminToken
+          },
+          body: JSON.stringify({
+            domain,
+            client_id: clientId,
+            client_secret: clientSecret,
+            store_name: storeName
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success && data.auth_url) {
+          showAlert('Redirecting to Shopify for authorization...', 'success');
+          setTimeout(() => {
+            window.location.href = data.auth_url;
+          }, 1000);
+        } else {
+          throw new Error(data.error || 'Error connecting store');
+        }
+        
+      } catch (error) {
+        console.error('Error:', error);
+        showAlert(error.message, 'error');
+        btn.disabled = false;
+        btn.innerHTML = originalContent;
+      }
+    });
+  </script>
+</body>
+</html>
