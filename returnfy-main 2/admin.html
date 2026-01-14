@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Returnfy - Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="loginScreen">
+    <div class="container" style="max-width: 400px; margin-top: 100px;">
+      <div class="form-card">
+        <div class="header">
+          <div class="header-logo">Returnfy</div>
+          <div class="header-subtitle">Admin Dashboard</div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="adminPassword" placeholder="Enter admin password">
+        </div>
+        
+        <button class="btn btn-primary btn-block" onclick="login()">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" style="display: none;">
+    <!-- Header -->
+    <div class="admin-header">
+      <div class="container container-wide">
+        <h1>Returnfy Admin</h1>
+        <nav class="admin-nav">
+          <a href="#" class="active" onclick="showSection('returns')">Returns</a>
+          <a href="#" onclick="showSection('stores')">Stores</a>
+          <a href="#" onclick="logout()">Logout</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container container-wide">
+      <!-- Returns Section -->
+      <div id="returnsSection">
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="statPending">0</div>
+            <div class="stat-label">Pending</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statReviewing">0</div>
+            <div class="stat-label">Reviewing</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statApproved">0</div>
+            <div class="stat-label">Approved</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statDenied">0</div>
+            <div class="stat-label">Denied</div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="form-card" style="margin-bottom: 20px; padding: 16px;">
+          <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+            <div class="form-group" style="margin: 0; flex: 1; min-width: 150px;">
+              <select class="form-select" id="filterStatus" onchange="loadReturns()">
+                <option value="all">All Status</option>
+                <option value="pending" selected>Pending</option>
+                <option value="reviewing">Reviewing</option>
+                <option value="approved_refund">Approved (Refund)</option>
+                <option value="approved_resend">Approved (Resend)</option>
+                <option value="denied">Denied</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin: 0; flex: 1; min-width: 150px;">
+              <select class="form-select" id="filterStore" onchange="loadReturns()">
+                <option value="">All Stores</option>
+              </select>
+            </div>
+            <button class="btn btn-secondary" onclick="loadReturns()">Refresh</button>
+          </div>
+        </div>
+
+        <!-- Returns Table -->
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Customer</th>
+              <th>Store</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="returnsTableBody">
+            <tr>
+              <td colspan="7" style="text-align: center; padding: 40px; color: #999;">
+                Loading...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Stores Section -->
+      <div id="storesSection" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h2>Connected Stores</h2>
+          <button class="btn btn-primary" onclick="openAddStoreModal()">+ Add Store</button>
+        </div>
+        
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Shopify Domain</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="storesTableBody">
+            <tr>
+              <td colspan="4" style="text-align: center; padding: 40px; color: #999;">
+                Loading...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Return Detail Modal -->
+  <div class="modal-overlay" id="returnModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Return Request Details</div>
+        <button class="modal-close" onclick="closeModal('returnModal')">&times;</button>
+      </div>
+      <div class="modal-body" id="returnModalBody">
+        <!-- Content loaded dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('returnModal')">Close</button>
+        <button class="action-btn resend" onclick="takeAction('approve_resend')">Approve Resend</button>
+        <button class="action-btn approve" onclick="takeAction('approve_refund')">Approve Refund</button>
+        <button class="action-btn deny" onclick="takeAction('deny')">Deny</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Store Modal -->
+  <div class="modal-overlay" id="storeModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Add Shopify Store</div>
+        <button class="modal-close" onclick="closeModal('storeModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 20px; color: #666; font-size: 14px;">
+          Connect your Shopify store via OAuth using the Dev Dashboard:
+        </p>
+        
+        <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 12px; padding: 20px;">
+          <h4 style="color: #166534; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            Secure OAuth Connection
+          </h4>
+          <p style="font-size: 13px; color: #15803d; margin-bottom: 16px;">
+            Creates a Custom App with the necessary permissions to access your orders.
+          </p>
+          <button onclick="window.location.href='/setup-shopify.html'" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; width: 100%; justify-content: center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            Connect Shopify Store
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('storeModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

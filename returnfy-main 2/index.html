@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Returnfy - Return Request</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-logo">Returnfy</div>
+      <div class="header-subtitle" data-i18n="header_subtitle">Return & Refund Portal</div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="form-card" id="mainCard">
+      
+      <!-- Step 0: Email Input -->
+      <div class="step" id="step-0">
+        <div class="step-title" data-i18n="step0_title">Find Your Order</div>
+        <div class="step-description" data-i18n="step0_desc">Enter the email address used in your purchase to locate your order.</div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="email_label">
+            Email Address <span class="required">*</span>
+          </label>
+          <input type="email" class="form-input" id="customerEmail" placeholder="your@email.com" required>
+          <div class="form-hint" data-i18n="email_hint">Use the same email from your order confirmation</div>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-primary btn-block" onclick="searchOrders()" data-i18n="search_orders">
+            Search Orders
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 1: Order Selection -->
+      <div class="step" id="step-1" style="display:none">
+        <div class="step-title" data-i18n="step1_title">Select Your Order</div>
+        <div class="step-description" data-i18n="step1_desc">Choose the order you want to request a return for.</div>
+        
+        <div class="order-list" id="orderList">
+          <!-- Orders populated by JS -->
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="goToStep(0)" data-i18n="back">Back</button>
+          <button class="btn btn-primary" onclick="goToStep(2)" id="selectOrderBtn" disabled data-i18n="continue">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Identity Verification -->
+      <div class="step" id="step-2" style="display:none">
+        <div class="progress-container">
+          <div class="progress-bar"><div class="progress-fill" style="width: 12.5%"></div></div>
+          <div class="progress-text">
+            <span data-i18n="step_of">Step 1 of 8</span>
+            <span>12%</span>
+          </div>
+        </div>
+        
+        <div class="step-title" data-i18n="step2_title">Identity Verification</div>
+        <div class="step-description" data-i18n="step2_desc">Please confirm your identity to proceed with the return request.</div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="fullname_label">Full Name <span class="required">*</span></label>
+          <input type="text" class="form-input" id="fullName" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="document_label">ID Document (CPF/NIF/SSN) <span class="required">*</span></label>
+          <input type="text" class="form-input" id="customerDocument" required>
+          <div class="form-hint" data-i18n="document_hint">Enter your tax identification number</div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="phone_label">Phone Number <span class="required">*</span></label>
+          <input type="tel" class="form-input" id="customerPhone" placeholder="+1 (555) 000-0000" required>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="goToStep(1)" data-i18n="back">Back</button>
+          <button class="btn btn-primary" onclick="validateAndNext(2)" data-i18n="continue">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Order Confirmation -->
+      <div class="step" id="step-3" style="display:none">
+        <div class="progress-container">
+          <div class="progress-bar"><div class="progress-fill" style="width: 25%"></div></div>
+          <div class="progress-text">
+            <span data-i18n="step_of">Step 2 of 8</span>
+            <span>25%</span>
+          </div>
+        </div>
+        
+        <div class="step-title" data-i18n="step3_title">Order Confirmation</div>
+        <div class="step-description" data-i18n="step3_desc">Please verify the order details below.</div>
+        
+        <div class="order-card selected" id="selectedOrderDetails">
+          <!-- Populated by JS -->
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="receive_date_label">When did you receive this order? <span class="required">*</span></label>
+          <input type="date" class="form-input" id="receiveDate" required>
+        </div>
+        
+        <div class="form-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="confirmOrder" required>
+            <label class="checkbox-label" for="confirmOrder" data-i18n="confirm_order">
+              I confirm this is the correct order and the information above is accurate.
+            </label>
+          </div>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="goToStep(2)" data-i18n="back">Back</button>
+          <button class="btn btn-primary" onclick="validateAndNext(3)" data-i18n="continue">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Return Reason -->
+      <div class="step" id="step-4" style="display:none">
+        <div class="progress-container">
+          <div class="progress-bar"><div class="progress-fill" style="width: 37.5%"></div></div>
+          <div class="progress-text">
+            <span data-i18n="step_of">Step 3 of 8</span>
+            <span>37%</span>
+          </div>
+        </div>
+        
+        <div class="step-title" data-i18n="step4_title">Return Reason</div>
+        <div class="step-description" data-i18n="step4_desc">Help us understand why you want to return this order.</div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="reason_label">Primary Reason <span class="required">*</span></label>
+          <select class="form-select" id="returnReason" required>
+            <option value="" data-i18n="select_reason">Select a reason...</option>
+            <option value="defective" data-i18n="reason_defective">Product is defective or damaged</option>
+            <option value="not_as_described" data-i18n="reason_not_described">Product not as described</option>
+            <option value="wrong_item" data-i18n="reason_wrong">Received wrong item</option>
+            <option value="quality" data-i18n="reason_quality">Quality not as expected</option>
+            <option value="size_fit" data-i18n="reason_size">Size/fit issues</option>
+            <option value="changed_mind" data-i18n="reason_changed">Changed my mind</option>
+            <option value="late_delivery" data-i18n="reason_late">Arrived too late</option>
+            <option value="missing_parts" data-i18n="reason_missing">Missing parts or accessories</option>
+            <option value="packaging_damaged" data-i18n="reason_packaging">Packaging was damaged</option>
+            <option value="other" data-i18n="reason_other">Other reason</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="description_label">Detailed Description <span class="required">*</span></label>
+          <textarea class="form-textarea" id="returnDescription" minlength="100" required 
+            placeholder="Please describe in detail the issue you experienced..."></textarea>
+          <div class="char-counter"><span id="descCharCount">0</span>/100 minimum</div>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="goToStep(3)" data-i18n="back">Back</button>
+          <button class="btn btn-primary" onclick="validateAndNext(4)" data-i18n="continue">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 5: Problem Details -->
+      <div class="step" id="step-5" style="display:none">
+        <div class="progress-container">
+          <div class="progress-bar"><div class="progress-fill" style="width: 50%"></div></div>
+          <div class="progress-text">
+            <span data-i18n="step_of">Step 4 of 8</span>
+            <span>50%</span>
+          </div>
+        </div>
+        
+        <div class="step-title" data-i18n="step5_title">Problem Details</div>
+        <div class="step-description" data-i18n="step5_desc">Please provide more information about the issue.</div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="when_noticed_label">When did you first notice the problem? <span class="required">*</span></label>
+          <select class="form-select" id="whenNoticed" required>
+            <option value="" data-i18n="select_option">Select...</option>
+            <option value="upon_delivery" data-i18n="upon_delivery">Upon delivery</option>
+            <option value="opening_package" data-i18n="opening_package">When opening the package</option>
+            <option value="first_use" data-i18n="first_use">On first use</option>
+            <option value="after_few_uses" data-i18n="after_few_uses">After a few uses</option>
+            <option value="after_week" data-i18n="after_week">After a week or more</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="tried_resolve_label">Have you tried to resolve the issue yourself? <span class="required">*</span></label>
+          <select class="form-select" id="triedResolve" required>
+            <option value="" data-i18n="select_option">Select...</option>
+            <option value="no" data-i18n="no_not_tried">No, I haven't tried anything</option>
+            <option value="yes_failed" data-i18n="yes_failed">Yes, but it didn't work</option>
+            <option value="yes_partial" data-i18n="yes_partial">Yes, partially resolved</option>
+            <option value="contacted_support" data-i18n="contacted_support">I contacted support before</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="resolution_attempts_label">If yes, please describe what you tried:</label>
+          <textarea class="form-textarea" id="resolutionAttempts" 
+            placeholder="Describe any steps you took to resolve the issue..."></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="product_used_label">Has the product been used? <span class="required">*</span></label>
+          <select class="form-select" id="productUsed" required>
+            <option value="" data-i18n="select_option">Select...</option>
+            <option value="no_sealed" data-i18n="no_sealed">No, still sealed</option>
+            <option value="no_opened" data-i18n="no_opened">No, opened but not used</option>
+            <option value="yes_once" data-i18n="yes_once">Yes, used once</option>
+            <option value="yes_few_times" data-i18n="yes_few_times">Yes, used a few times</option>
+            <option value="yes_regularly" data-i18n="yes_regularly">Yes, used regularly</option>
+          </select>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="goToStep(4)" data-i18n="back">Back</button>
+          <button class="btn btn-primary" onclick="validateAndNext(5)" data-i18n="continue">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 6: Photo Evidence -->
+      <div class="step" id="step-6" style="display:none">
+        <div class="progress-container">
+          <div class="progress-bar"><div class="progress-fill" style="width: 62.5%"></div></div>
+          <div class="progress-text">
+            <span data-i18n="step_of">Step 5 of 8</span>
+            <span>62%</span>
+          </div>
+        </div>
+        
+        <div class="step-title" data-i18n="step6_title">Photo Evidence</div>
+        <div class="step-description" data-i18n="step6_desc">Please upload clear photos to support your return request.</div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="photo_product_front">Product Photo (Front View) <span class="required">*</span></label>
+          <div class="upload-zone" data-upload="product_front">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text" data-i18n="upload_text">Click or drag to upload</div>
+          </div>
+          <div class="upload-preview" id="preview_product_front"></div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="photo_product_back">Product Photo (Back View) <span class="required">*</span></label>
+          <div class="upload-zone" data-upload="product_back">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text" data-i18n="upload_text">Click or drag to upload</div>
+          </div>
+          <div class="upload-preview" id="preview_product_back"></div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="photo_defect">Photo of Defect/Issue <span class="required">*</span></label>
+          <div class="upload-zone" data-upload="defect">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text" data-i18n="upload_text">Click or drag to upload</div>
+          </div>
+          <div class="upload-preview" id="preview_defect"></div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="photo_packaging">Packaging Photo <span class="required">*</span></label>
+          <div class="upload-zone" data-upload="packaging">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text" data-i18n="upload_text">Click or drag to upload</div>
+          </div>
+          <div class="upload-preview" id="preview_packaging"></div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="photo_label">Shipping Label Photo <span class="required">*</span></label>
+          <div class="upload-zone" data-upload="label">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text" data-i18n="upload_text">Click or drag to upload</div>
+          </div>
+          <div class="upload-preview" id="preview_label"></div>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="goToStep(5)" data-i18n="back">Back</button>
+          <button class="btn btn-primary" onclick="validateAndNext(6)" data-i18n="continue">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 7: Shipping Information -->
+      <div class="step" id="step-7" style="display:none">
+        <div class="progress-container">
+          <div class="progress-bar"><div class="progress-fill" style="width: 75%"></div></div>
+          <div class="progress-text">
+            <span data-i18n="step_of">Step 6 of 8</span>
+            <span>75%</span>
+          </div>
+        </div>
+        
+        <div class="step-title" data-i18n="step7_title">Shipping Information</div>
+        <div class="step-description" data-i18n="step7_desc">Confirm your address for potential product pickup.</div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="address_label">Full Address <span class="required">*</span></label>
+          <input type="text" class="form-input" id="addressLine1" placeholder="Street address" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="address2_label">Address Line 2</label>
+          <input type="text" class="form-input" id="addressLine2" placeholder="Apartment, suite, etc.">
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="form-group">
+            <label class="form-label" data-i18n="city_label">City <span class="required">*</span></label>
+            <input type="text" class="form-input" id="city" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" data-i18n="state_label">State/Province <span class="required">*</span></label>
+            <input type="text" class="form-input" id="state" required>
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="form-group">
+            <label class="form-label" data-i18n="zip_label">ZIP/Postal Code <span class="required">*</span></label>
+            <input type="text" class="form-input" id="zipCode" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" data-i18n="country_label">Country <span class="required">*</span></label>
+            <input type="text" class="form-input" id="country" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="availability_label">Availability for Pickup <span class="required">*</span></label>
+          <select class="form-select" id="pickupAvailability" required>
+            <option value="" data-i18n="select_option">Select...</option>
+            <option value="weekday_morning">Weekdays - Morning (8am-12pm)</option>
+            <option value="weekday_afternoon">Weekdays - Afternoon (12pm-6pm)</option>
+            <option value="weekend_morning">Weekends - Morning (8am-12pm)</option>
+            <option value="weekend_afternoon">Weekends - Afternoon (12pm-6pm)</option>
+            <option value="any">Any time</option>
+          </select>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="goToStep(6)" data-i18n="back">Back</button>
+          <button class="btn btn-primary" onclick="validateAndNext(7)" data-i18n="continue">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 8: Resolution Preference -->
+      <div class="step" id="step-8" style="display:none">
+        <div class="progress-container">
+          <div class="progress-bar"><div class="progress-fill" style="width: 87.5%"></div></div>
+          <div class="progress-text">
+            <span data-i18n="step_of">Step 7 of 8</span>
+            <span>87%</span>
+          </div>
+        </div>
+        
+        <div class="step-title" data-i18n="step8_title">Resolution Preference</div>
+        <div class="step-description" data-i18n="step8_desc">How would you like us to resolve this issue?</div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="resolution_type_label">Preferred Resolution <span class="required">*</span></label>
+          <select class="form-select" id="resolutionType" required onchange="toggleBankDetails()">
+            <option value="" data-i18n="select_option">Select...</option>
+            <option value="refund" data-i18n="resolution_refund">Full Refund</option>
+            <option value="exchange" data-i18n="resolution_exchange">Product Exchange</option>
+            <option value="store_credit" data-i18n="resolution_credit">Store Credit</option>
+          </select>
+        </div>
+        
+        <div id="bankDetailsSection" style="display: none;">
+          <div class="form-group">
+            <label class="form-label" data-i18n="bank_name_label">Bank Name <span class="required">*</span></label>
+            <input type="text" class="form-input" id="bankName">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" data-i18n="account_holder_label">Account Holder Name <span class="required">*</span></label>
+            <input type="text" class="form-input" id="accountHolder">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" data-i18n="iban_label">IBAN / Account Number <span class="required">*</span></label>
+            <input type="text" class="form-input" id="ibanAccount">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" data-i18n="swift_label">SWIFT/BIC Code</label>
+            <input type="text" class="form-input" id="swiftCode">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="additional_comments_label">Additional Comments</label>
+          <textarea class="form-textarea" id="additionalComments" 
+            placeholder="Any additional information you'd like to share..."></textarea>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="goToStep(7)" data-i18n="back">Back</button>
+          <button class="btn btn-primary" onclick="validateAndNext(8)" data-i18n="continue">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 9: Terms & Signature -->
+      <div class="step" id="step-9" style="display:none">
+        <div class="progress-container">
+          <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+          <div class="progress-text">
+            <span data-i18n="step_of">Step 8 of 8</span>
+            <span>100%</span>
+          </div>
+        </div>
+        
+        <div class="step-title" data-i18n="step9_title">Terms & Agreement</div>
+        <div class="step-description" data-i18n="step9_desc">Please read and accept our return policy.</div>
+        
+        <div class="terms-box" id="termsBox">
+          <h4>Return Policy Agreement</h4>
+          <p>By submitting this return request, you acknowledge and agree to the following terms and conditions:</p>
+          
+          <p><strong>1. Eligibility</strong><br>
+          Products must be returned within 30 days of delivery. Items must be in their original condition, with all tags and packaging intact. Products that have been damaged through misuse, neglect, or unauthorized modifications are not eligible for return.</p>
+          
+          <p><strong>2. Inspection Process</strong><br>
+          All returned items will undergo a thorough inspection upon receipt. This process may take 5-10 business days. We reserve the right to reject returns that do not meet our return criteria or appear to have been used beyond reasonable inspection.</p>
+          
+          <p><strong>3. Refund Processing</strong><br>
+          Approved refunds will be processed within 14 business days after inspection completion. Refunds will be issued to the original payment method. Shipping costs are non-refundable unless the return is due to our error.</p>
+          
+          <p><strong>4. Exchange Policy</strong><br>
+          Exchanges are subject to product availability. If the requested exchange item is unavailable, a refund will be issued instead. Additional shipping charges may apply for exchanges.</p>
+          
+          <p><strong>5. Fraudulent Claims</strong><br>
+          Submitting false or misleading information in a return request is prohibited and may result in denial of current and future return requests, account suspension, and potential legal action.</p>
+          
+          <p><strong>6. Data Usage</strong><br>
+          Information provided in this form will be used solely for processing your return request and improving our services. We may retain this information for record-keeping purposes in accordance with applicable laws.</p>
+          
+          <p><strong>7. Limitation of Liability</strong><br>
+          Our liability is limited to the purchase price of the returned product. We are not responsible for any indirect, incidental, or consequential damages arising from the use or inability to use our products.</p>
+          
+          <p><strong>8. Governing Law</strong><br>
+          This agreement shall be governed by and construed in accordance with applicable consumer protection laws. Any disputes shall be resolved through appropriate legal channels.</p>
+        </div>
+        
+        <div class="checkbox-group" style="margin-bottom: 24px;">
+          <div class="checkbox-item">
+            <input type="checkbox" id="acceptTerms1" required>
+            <label class="checkbox-label" for="acceptTerms1" data-i18n="accept_terms1">
+              I have read and understand the return policy terms and conditions.
+            </label>
+          </div>
+          
+          <div class="checkbox-item">
+            <input type="checkbox" id="acceptTerms2" required>
+            <label class="checkbox-label" for="acceptTerms2" data-i18n="accept_terms2">
+              I confirm that all information provided in this form is accurate and truthful.
+            </label>
+          </div>
+          
+          <div class="checkbox-item">
+            <input type="checkbox" id="acceptTerms3" required>
+            <label class="checkbox-label" for="acceptTerms3" data-i18n="accept_terms3">
+              I understand that providing false information may result in denial of my request.
+            </label>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="signature_label">Digital Signature <span class="required">*</span></label>
+          <div class="signature-container">
+            <canvas id="signaturePad" class="signature-pad"></canvas>
+            <div class="signature-actions">
+              <button type="button" class="btn btn-secondary" onclick="clearSignature()" data-i18n="clear">Clear</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="goToStep(8)" data-i18n="back">Back</button>
+          <button class="btn btn-primary" onclick="submitReturn()" data-i18n="submit_request">Submit Request</button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="step" id="step-loading" style="display:none">
+        <div class="fake-loading">
+          <div class="spinner"></div>
+          <div class="loading-text" data-i18n="processing">Processing your request...</div>
+          <div class="loading-text" style="font-size: 12px; margin-top: 8px;" data-i18n="please_wait">This may take a moment. Please do not close this page.</div>
+        </div>
+      </div>
+
+      <!-- Success State -->
+      <div class="step" id="step-success" style="display:none">
+        <div class="success-screen">
+          <div class="success-icon">✓</div>
+          <div class="success-title" data-i18n="success_title">Request Submitted!</div>
+          <div class="success-message" data-i18n="success_message">
+            Your return request has been received. We will review your submission and contact you within 3-5 business days with our decision.
+          </div>
+          <div style="margin-top: 24px; padding: 16px; background: #f8f9fa; border-radius: 8px;">
+            <div style="font-size: 13px; color: #666;" data-i18n="reference_number">Reference Number:</div>
+            <div style="font-size: 18px; font-weight: 700; color: #1a1a2e;" id="referenceNumber">-</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
+      Powered by Returnfy
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
