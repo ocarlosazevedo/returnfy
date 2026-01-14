@@ -401,7 +401,7 @@
       btn.innerHTML = '<div class="spinner"></div> Connecting...';
       
       try {
-        const response = await fetch('/api/shopify/customapp/connect', {
+        const response = await fetch('/api/shopify-connect', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
