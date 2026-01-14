@@ -1,4 +1,3 @@
-import { getSupabase } from '../../../lib/supabase.js';
 import crypto from 'crypto';
 
 /**
