@@ -166,24 +166,61 @@
         <button class="modal-close" onclick="closeModal('storeModal')">&times;</button>
       </div>
       <div class="modal-body">
-        <div class="form-group">
-          <label class="form-label">Store Name</label>
-          <input type="text" class="form-input" id="newStoreName" placeholder="My Store Brazil">
+        <p style="margin-bottom: 20px; color: #666; font-size: 14px;">
+          Choose how you want to connect your Shopify store:
+        </p>
+        
+        <!-- OAuth Method (Recommended) -->
+        <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+          <h4 style="color: #166534; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+            <span style="background: #22c55e; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px;">RECOMMENDED</span>
+            OAuth via Dev Dashboard
+          </h4>
+          <p style="font-size: 13px; color: #15803d; margin-bottom: 12px;">
+            More secure method using Shopify OAuth. Creates a Custom App with proper scopes.
+          </p>
+          <a href="/setup-shopify" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            Setup via OAuth
+          </a>
         </div>
-        <div class="form-group">
-          <label class="form-label">Shopify Domain</label>
-          <input type="text" class="form-input" id="newStoreDomain" placeholder="mystore.myshopify.com">
-          <div class="form-hint">Your myshopify.com domain (not custom domain)</div>
+        
+        <!-- Divider -->
+        <div style="display: flex; align-items: center; margin: 20px 0;">
+          <div style="flex: 1; height: 1px; background: #e5e7eb;"></div>
+          <span style="padding: 0 12px; color: #9ca3af; font-size: 12px;">OR</span>
+          <div style="flex: 1; height: 1px; background: #e5e7eb;"></div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Admin API Access Token</label>
-          <input type="password" class="form-input" id="newStoreToken" placeholder="shpat_xxxxx">
-          <div class="form-hint">Create in Shopify Admin → Settings → Apps → Develop apps</div>
+        
+        <!-- Manual Token Method (Legacy) -->
+        <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px;">
+          <h4 style="color: #374151; margin-bottom: 8px; font-size: 14px;">Manual Token (Legacy)</h4>
+          <p style="font-size: 12px; color: #6b7280; margin-bottom: 12px;">
+            Use an Admin API Access Token created directly in Shopify Admin.
+          </p>
+          
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 12px;">Store Name</label>
+            <input type="text" class="form-input" id="newStoreName" placeholder="My Store Brazil" style="padding: 10px 12px; font-size: 13px;">
+          </div>
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 12px;">Shopify Domain</label>
+            <input type="text" class="form-input" id="newStoreDomain" placeholder="mystore.myshopify.com" style="padding: 10px 12px; font-size: 13px;">
+          </div>
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 12px;">Admin API Access Token</label>
+            <input type="password" class="form-input" id="newStoreToken" placeholder="shpat_xxxxx" style="padding: 10px 12px; font-size: 13px;">
+            <div class="form-hint" style="font-size: 11px;">Create in Shopify Admin → Settings → Apps → Develop apps</div>
+          </div>
+          
+          <button class="btn btn-secondary" onclick="addStore()" style="padding: 10px 16px; font-size: 13px;">Add with Token</button>
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeModal('storeModal')">Cancel</button>
-        <button class="btn btn-primary" onclick="addStore()">Add Store</button>
       </div>
     </div>
   </div>
