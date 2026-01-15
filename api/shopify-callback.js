@@ -19,7 +19,7 @@ function getAppBaseUrl() {
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
   }
-  return 'https://returnfy.vercel.app';
+  return 'https://returnfy.me';
 }
 
 // Decodifica state do OAuth
