@@ -106,6 +106,11 @@ function goToStep(step) {
     
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Re-initialize signature pad when step 9 is shown
+    if (step === 9) {
+      setTimeout(() => initSignaturePad(), 100);
+    }
   }
 }
 
