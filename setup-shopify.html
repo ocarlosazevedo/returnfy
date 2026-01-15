@@ -74,7 +74,44 @@
       border: 1px solid #e1e3e5;
     }
     .steps-list strong { color: #202223; font-weight: 600; }
-    
+
+    .copy-box {
+      background: #f6f6f7;
+      border: 1px solid #e1e3e5;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      font-size: 12px;
+    }
+    .copy-box-text {
+      flex: 1;
+      color: #202223;
+      word-break: break-all;
+      line-height: 1.4;
+    }
+    .copy-btn {
+      padding: 6px 12px;
+      background: #008060;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: #006847;
+    }
+    .copy-btn.copied {
+      background: #00a672;
+    }
+
     .form-group { margin-bottom: 24px; }
     .form-label {
       display: block;
@@ -264,15 +301,26 @@
             <li data-step="2.">Click <strong>Apps</strong> → <strong>Create app</strong> → <strong>Custom app</strong></li>
             <li data-step="3.">Fill in:
               <br><strong>App name:</strong> <code>Returnfy</code>
-              <br><strong>App URL:</strong> <code>https://returnfy.me</code>
+              <br><strong>App URL:</strong>
+              <div class="copy-box">
+                <span class="copy-box-text">https://returnfy.me</span>
+                <button class="copy-btn" onclick="copyToClipboard('https://returnfy.me', this)">Copy</button>
+              </div>
             </li>
-            <li data-step="4.">In <strong>Configuration</strong> → <strong>App setup</strong>:
+            <li data-step="4.">In <strong>Configuration</strong> → <strong>Allowed redirection URL(s)</strong>:
+              <br><strong>IMPORTANT: Add BOTH URLs separated by comma:</strong>
+              <div class="copy-box">
+                <span class="copy-box-text">https://returnfy.me/api/shopify-callback,https://returnfy.vercel.app/api/shopify-callback</span>
+                <button class="copy-btn" onclick="copyToClipboard('https://returnfy.me/api/shopify-callback,https://returnfy.vercel.app/api/shopify-callback', this)">Copy</button>
+              </div>
+            </li>
+            <li data-step="5.">In <strong>Configuration</strong> → <strong>App setup</strong>:
               <br>Add scopes: <code>read_orders, read_products, read_customers</code>
             </li>
-            <li data-step="5."><strong>IMPORTANT:</strong> Go to <strong>App extensions</strong> and <strong>DISABLE</strong> "App embed". We don't need theme extensions.</li>
-            <li data-step="6.">Click <strong>Create app version</strong> → <strong>Release</strong></li>
-            <li data-step="7.">Install the app on your test store</li>
-            <li data-step="8.">Copy <strong>API key (Client ID)</strong> and <strong>API secret key (Client Secret)</strong> from Settings</li>
+            <li data-step="6."><strong>IMPORTANT:</strong> Go to <strong>App extensions</strong> and <strong>DISABLE</strong> "App embed". We don't need theme extensions.</li>
+            <li data-step="7.">Click <strong>Create app version</strong> → <strong>Release</strong></li>
+            <li data-step="8.">Install the app on your test store</li>
+            <li data-step="9.">Copy <strong>API key (Client ID)</strong> and <strong>API secret key (Client Secret)</strong> from Settings and fill the form below</li>
           </ol>
         </div>
         
@@ -336,6 +384,23 @@
   </div>
   
   <script>
+    // Copy to clipboard function
+    function copyToClipboard(text, button) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = button.textContent;
+        button.textContent = 'Copied!';
+        button.classList.add('copied');
+
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.classList.remove('copied');
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        alert('Failed to copy to clipboard. Please copy manually.');
+      });
+    }
+
     // Check URL params for status
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('store_connected') === 'true') {
