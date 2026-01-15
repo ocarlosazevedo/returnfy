@@ -757,15 +757,39 @@ async function downloadPDF() {
       throw new Error('Failed to generate PDF');
     }
 
-    const blob = await response.blob();
+    // Get HTML content
+    const htmlContent = await response.text();
+
+    // Create a blob from the HTML
+    const blob = new Blob([htmlContent], { type: 'text/html' });
     const url = window.URL.createObjectURL(blob);
+
+    // Open in new tab so user can print to PDF
+    const printWindow = window.open(url, '_blank');
+
+    // Alternative: Download as HTML file
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Return_Request_${state.returnId.substring(0, 8).toUpperCase()}.pdf`;
+    a.download = `Return_Request_${state.returnId.substring(0, 8).toUpperCase()}.html`;
+    a.style.display = 'none';
     document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
+
+    // Give user choice: print or download
+    setTimeout(() => {
+      if (confirm('PDF generated! Click OK to open in new tab (then use browser Print > Save as PDF), or Cancel to download as HTML file.')) {
+        // User chose to print - window already opened
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } else {
+        // User chose to download HTML
+        printWindow?.close();
+        a.click();
+        setTimeout(() => {
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        }, 100);
+      }
+    }, 500);
 
     button.disabled = false;
     button.textContent = 'Download Proof of Request (PDF)';
