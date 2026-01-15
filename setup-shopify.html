@@ -245,15 +245,22 @@
               <line x1="12" y1="16" x2="12" y2="12"></line>
               <line x1="12" y1="8" x2="12.01" y2="8"></line>
             </svg>
-            How to get credentials
+            Setup Instructions
           </div>
           <ol class="steps-list">
-            <li data-step="1.">Go to <a href="https://dev.shopify.com" target="_blank">dev.shopify.com</a></li>
-            <li data-step="2.">Click <strong>Create an app</strong> → <strong>Start from Dev Dashboard</strong></li>
-            <li data-step="3.">In <strong>App URL</strong>, add: <code>https://returnfy.vercel.app</code></li>
-            <li data-step="4.">In <strong>Scopes</strong>, add: <code>read_orders, read_products, read_customers</code></li>
-            <li data-step="5.">Click <strong>Release</strong> then <strong>Install</strong> on your store</li>
-            <li data-step="6.">Copy <strong>Client ID</strong> and <strong>Client Secret</strong> from Settings</li>
+            <li data-step="1.">Go to <a href="https://partners.shopify.com/organizations" target="_blank">Shopify Partners Dashboard</a></li>
+            <li data-step="2.">Click <strong>Apps</strong> → <strong>Create app</strong> → <strong>Custom app</strong></li>
+            <li data-step="3.">Fill in:
+              <br><strong>App name:</strong> <code>Returnfy</code>
+              <br><strong>App URL:</strong> <code>https://returnfy.me</code>
+            </li>
+            <li data-step="4.">In <strong>Configuration</strong> → <strong>App setup</strong>:
+              <br>Add scopes: <code>read_orders, read_products, read_customers</code>
+            </li>
+            <li data-step="5."><strong>IMPORTANT:</strong> Go to <strong>App extensions</strong> and <strong>DISABLE</strong> "App embed". We don't need theme extensions.</li>
+            <li data-step="6.">Click <strong>Create app version</strong> → <strong>Release</strong></li>
+            <li data-step="7.">Install the app on your test store</li>
+            <li data-step="8.">Copy <strong>API key (Client ID)</strong> and <strong>API secret key (Client Secret)</strong> from Settings</li>
           </ol>
         </div>
         
