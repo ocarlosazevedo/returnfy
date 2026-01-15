@@ -454,10 +454,14 @@ function handleFileSelect(event, uploadKey) {
 }
 
 async function handleFile(file, uploadKey) {
+  console.log('handleFile called:', uploadKey, file.name, file.type);
+
   // Validate file type
   const isDocument = uploadKey === 'id_document' || uploadKey === 'proof_of_address';
   const isValidImage = file.type.startsWith('image/');
   const isValidPDF = file.type === 'application/pdf';
+
+  console.log('File validation:', { isDocument, isValidImage, isValidPDF });
 
   if (isDocument) {
     if (!isValidImage && !isValidPDF) {
@@ -597,26 +601,34 @@ let isDrawing = false;
 
 function initSignaturePad() {
   const canvas = document.getElementById('signaturePad');
+  if (!canvas) return;
+
   const ctx = canvas.getContext('2d');
-  
-  // Set canvas size
-  canvas.width = canvas.offsetWidth;
-  canvas.height = 150;
-  
+
+  // Set canvas size based on parent container
+  const parent = canvas.parentElement;
+  const parentWidth = parent.offsetWidth;
+
+  canvas.width = parentWidth > 0 ? parentWidth : 600; // Fallback width
+  canvas.height = 200;
+
   // Style
   ctx.strokeStyle = '#1a1a2e';
   ctx.lineWidth = 2;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  
+
   signaturePadContext = ctx;
-  
+
+  // Clear any existing event listeners by cloning the canvas
+  // (not needed for first init, but good practice)
+
   // Events
   canvas.addEventListener('mousedown', startDrawing);
   canvas.addEventListener('mousemove', draw);
   canvas.addEventListener('mouseup', stopDrawing);
   canvas.addEventListener('mouseout', stopDrawing);
-  
+
   // Touch events
   canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
