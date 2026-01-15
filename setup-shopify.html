@@ -9,173 +9,183 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); 
-      color: #e2e8f0; 
-      min-height: 100vh; 
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f6f6f7;
+      color: #202223;
+      min-height: 100vh;
       padding: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .container { width: 100%; max-width: 560px; }
-    
-    .card { 
-      background: rgba(255,255,255,0.03); 
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.08); 
-      border-radius: 20px; 
-      padding: 40px; 
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    .container { width: 100%; max-width: 680px; }
+
+    .card {
+      background: white;
+      border: 1px solid #e1e3e5;
+      border-radius: 12px;
+      padding: 48px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     }
-    
+
     .card-header { text-align: center; margin-bottom: 32px; }
-    .logo { font-size: 2rem; font-weight: 700; color: #00d4aa; margin-bottom: 8px; }
-    .card-title { font-size: 1.5rem; font-weight: 600; color: #fff; margin-bottom: 8px; }
-    .card-subtitle { font-size: 0.9rem; color: #94a3b8; }
+    .logo { font-size: 2rem; font-weight: 700; color: #008060; margin-bottom: 8px; }
+    .card-title { font-size: 1.5rem; font-weight: 600; color: #202223; margin-bottom: 8px; }
+    .card-subtitle { font-size: 0.9rem; color: #6d7175; }
     
-    .steps { 
-      background: rgba(0,212,170,0.08); 
-      border: 1px solid rgba(0,212,170,0.2); 
-      border-radius: 12px; 
-      padding: 20px; 
-      margin-bottom: 28px; 
+    .steps {
+      background: #e3f5f0;
+      border: 1px solid #b8dfd2;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 28px;
     }
-    .steps-title { 
-      font-size: 0.85rem; 
-      font-weight: 600; 
-      color: #00d4aa; 
-      margin-bottom: 14px; 
-      display: flex; 
-      align-items: center; 
-      gap: 8px; 
+    .steps-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #008060;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .steps-list { list-style: none; font-size: 0.85rem; color: #94a3b8; }
-    .steps-list li { padding: 8px 0; padding-left: 24px; position: relative; line-height: 1.5; }
-    .steps-list li::before { 
-      content: attr(data-step); 
-      position: absolute; 
-      left: 0; 
-      color: #00d4aa; 
+    .steps-list { list-style: none; font-size: 0.85rem; color: #202223; }
+    .steps-list li { padding: 8px 0; padding-left: 24px; position: relative; line-height: 1.6; }
+    .steps-list li::before {
+      content: attr(data-step);
+      position: absolute;
+      left: 0;
+      color: #008060;
       font-weight: 600;
       width: 18px;
     }
-    .steps-list a { color: #00d4aa; text-decoration: none; font-weight: 500; }
+    .steps-list a { color: #008060; text-decoration: none; font-weight: 500; }
     .steps-list a:hover { text-decoration: underline; }
-    .steps-list code { 
-      background: rgba(0,0,0,0.3); 
-      padding: 2px 8px; 
-      border-radius: 4px; 
-      font-size: 0.8rem; 
-      color: #60a5fa; 
+    .steps-list code {
+      background: #f6f6f7;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      color: #008060;
       word-break: break-all;
       display: inline-block;
       margin-top: 4px;
+      border: 1px solid #e1e3e5;
     }
-    .steps-list strong { color: #fff; }
+    .steps-list strong { color: #202223; font-weight: 600; }
     
-    .form-group { margin-bottom: 20px; }
-    .form-label { 
-      display: block; 
-      font-size: 0.85rem; 
-      font-weight: 500; 
-      color: #94a3b8; 
-      margin-bottom: 8px; 
+    .form-group { margin-bottom: 24px; }
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #202223;
+      margin-bottom: 8px;
     }
-    .form-input { 
-      width: 100%; 
-      padding: 14px 16px; 
-      background: rgba(0,0,0,0.3); 
-      border: 1px solid rgba(255,255,255,0.1); 
-      border-radius: 10px; 
-      color: #fff; 
-      font-size: 0.95rem; 
-      transition: all 0.2s; 
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: white;
+      border: 1.5px solid #e1e3e5;
+      border-radius: 8px;
+      color: #202223;
+      font-size: 14px;
+      transition: all 0.2s;
       font-family: inherit;
     }
-    .form-input:focus { 
-      outline: none; 
-      border-color: #00d4aa; 
-      box-shadow: 0 0 0 3px rgba(0,212,170,0.15); 
+    .form-input:hover {
+      border-color: #c9cccf;
     }
-    .form-input::placeholder { color: #64748b; }
-    .form-hint { font-size: 0.75rem; color: #64748b; margin-top: 6px; }
+    .form-input:focus {
+      outline: none;
+      border-color: #008060;
+      box-shadow: 0 0 0 3px #e3f5f0;
+    }
+    .form-input::placeholder { color: #8c9196; }
+    .form-hint { font-size: 13px; color: #6d7175; margin-top: 6px; line-height: 1.4; }
     
     .input-password-wrapper { position: relative; }
     .input-password-wrapper .form-input { padding-right: 48px; }
-    .toggle-password { 
-      position: absolute; 
-      right: 12px; 
+    .toggle-password {
+      position: absolute;
+      right: 12px;
       top: 50%;
       transform: translateY(-50%);
-      background: none; 
-      border: none; 
-      cursor: pointer; 
-      padding: 4px; 
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
       display: flex;
-      color: #64748b;
+      color: #6d7175;
       transition: color 0.2s;
     }
-    .toggle-password:hover { color: #00d4aa; }
+    .toggle-password:hover { color: #008060; }
     .toggle-password svg { width: 20px; height: 20px; }
-    
-    .btn { 
-      width: 100%; 
-      padding: 16px; 
-      border: none; 
-      border-radius: 10px; 
-      font-size: 1rem; 
-      font-weight: 600; 
-      cursor: pointer; 
-      transition: all 0.2s; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      gap: 10px;
+
+    .btn {
+      width: 100%;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       font-family: inherit;
     }
-    .btn-primary { 
-      background: linear-gradient(135deg, #00d4aa 0%, #00b894 100%); 
-      color: #000; 
+    .btn-primary {
+      background: #008060;
+      color: white;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
     }
-    .btn-primary:hover { 
-      transform: translateY(-2px); 
-      box-shadow: 0 10px 25px rgba(0,212,170,0.35); 
+    .btn-primary:hover {
+      background: #006847;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     }
-    .btn-primary:disabled { 
-      opacity: 0.5; 
-      cursor: not-allowed; 
-      transform: none; 
-      box-shadow: none; 
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
     .btn svg { width: 20px; height: 20px; }
     
-    .alert { 
-      padding: 14px 18px; 
-      border-radius: 10px; 
-      font-size: 0.9rem; 
-      margin-bottom: 20px; 
-      display: flex; 
-      align-items: center; 
-      gap: 12px; 
+    .alert {
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      line-height: 1.5;
     }
     .alert svg { width: 20px; height: 20px; flex-shrink: 0; }
-    .alert-success { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
-    .alert-error { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
-    .alert-info { background: rgba(59,130,246,0.15); color: #3b82f6; border: 1px solid rgba(59,130,246,0.3); }
-    
+    .alert-success { background: #d1f7e5; color: #008060; border: 1px solid #b8dfd2; }
+    .alert-error { background: #fef0f0; color: #d72c0d; border: 1px solid #fcd6d6; }
+    .alert-info { background: #e7f3ff; color: #0066cc; border: 1px solid #c4e0ff; }
+
     .back-link { text-align: center; margin-top: 24px; }
-    .back-link a { 
-      color: #64748b; 
-      text-decoration: none; 
-      font-size: 0.9rem; 
+    .back-link a {
+      color: #6d7175;
+      text-decoration: none;
+      font-size: 14px;
       transition: color 0.2s;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      font-weight: 500;
     }
-    .back-link a:hover { color: #00d4aa; }
+    .back-link a:hover { color: #008060; }
     .back-link svg { width: 16px; height: 16px; }
     
     .spinner { 
@@ -189,20 +199,22 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     
     .success-state { text-align: center; }
-    .success-icon { 
-      width: 80px; 
-      height: 80px; 
-      background: rgba(34,197,94,0.15); 
-      border-radius: 50%; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      margin: 0 auto 24px; 
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: #d1f7e5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      box-shadow: 0 8px 24px rgba(0, 128, 96, 0.2);
     }
-    .success-icon svg { width: 40px; height: 40px; color: #22c55e; }
-    
-    @media (max-width: 500px) { 
-      .card { padding: 24px; }
+    .success-icon svg { width: 40px; height: 40px; color: #008060; }
+
+    @media (max-width: 768px) {
+      .card { padding: 32px 24px; }
+      .container { padding: 16px; }
     }
   </style>
 </head>
