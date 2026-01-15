@@ -410,28 +410,35 @@ function renderSelectedOrderDetails() {
 function initUploadZones() {
   document.querySelectorAll('.upload-zone').forEach(zone => {
     const uploadKey = zone.dataset.upload;
-    
+
     // Create hidden input
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = 'image/*';
+
+    // Allow PDF for document uploads (ID and proof of address)
+    if (uploadKey === 'id_document' || uploadKey === 'proof_of_address') {
+      input.accept = 'image/*,application/pdf';
+    } else {
+      input.accept = 'image/*';
+    }
+
     input.style.display = 'none';
     input.onchange = (e) => handleFileSelect(e, uploadKey);
     zone.appendChild(input);
-    
+
     // Click to upload
     zone.onclick = () => input.click();
-    
+
     // Drag and drop
     zone.ondragover = (e) => {
       e.preventDefault();
       zone.classList.add('dragover');
     };
-    
+
     zone.ondragleave = () => {
       zone.classList.remove('dragover');
     };
-    
+
     zone.ondrop = (e) => {
       e.preventDefault();
       zone.classList.remove('dragover');
@@ -448,28 +455,57 @@ function handleFileSelect(event, uploadKey) {
 
 async function handleFile(file, uploadKey) {
   // Validate file type
-  if (!file.type.startsWith('image/')) {
-    alert('Please upload an image file.');
-    return;
+  const isDocument = uploadKey === 'id_document' || uploadKey === 'proof_of_address';
+  const isValidImage = file.type.startsWith('image/');
+  const isValidPDF = file.type === 'application/pdf';
+
+  if (isDocument) {
+    if (!isValidImage && !isValidPDF) {
+      alert('Por favor, envie uma imagem ou arquivo PDF.');
+      return;
+    }
+  } else {
+    if (!isValidImage) {
+      alert('Por favor, envie uma imagem.');
+      return;
+    }
   }
-  
-  // Validate file size (5MB max)
-  if (file.size > 5 * 1024 * 1024) {
-    alert('File too large. Maximum size is 5MB.');
+
+  // Validate file size (10MB max for PDFs, 5MB for images)
+  const maxSize = isValidPDF ? 10 * 1024 * 1024 : 5 * 1024 * 1024;
+  if (file.size > maxSize) {
+    alert(`Arquivo muito grande. Tamanho máximo: ${isValidPDF ? '10MB' : '5MB'}.`);
     return;
   }
   
   // Show preview immediately
   const previewContainer = document.getElementById(`preview_${uploadKey}`);
   const reader = new FileReader();
-  
+
   reader.onload = (e) => {
-    previewContainer.innerHTML = `
-      <div class="upload-preview-item">
-        <img src="${e.target.result}">
-        <button class="remove-btn" onclick="removeUpload('${uploadKey}')">&times;</button>
-      </div>
-    `;
+    if (isValidPDF) {
+      // Show PDF icon for PDF files
+      previewContainer.innerHTML = `
+        <div class="upload-preview-item">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f0f0f0; border-radius: 8px;">
+            <div style="font-size: 32px;">📄</div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600; font-size: 14px; color: #1a1a2e;">${file.name}</div>
+              <div style="font-size: 12px; color: #666;">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+            </div>
+            <button class="remove-btn" onclick="removeUpload('${uploadKey}')">&times;</button>
+          </div>
+        </div>
+      `;
+    } else {
+      // Show image preview for images
+      previewContainer.innerHTML = `
+        <div class="upload-preview-item">
+          <img src="${e.target.result}">
+          <button class="remove-btn" onclick="removeUpload('${uploadKey}')">&times;</button>
+        </div>
+      `;
+    }
   };
   reader.readAsDataURL(file);
   
@@ -740,63 +776,29 @@ async function downloadPDF() {
   try {
     const button = document.getElementById('downloadPdfBtn');
     button.disabled = true;
-    button.textContent = 'Generating PDF...';
+    button.textContent = 'Gerando recibo...';
 
-    const response = await fetch('/api/returns/generate-pdf', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        return_id: state.returnId,
-        customer_email: state.customerEmail
-      })
-    });
+    const refNumber = state.returnId.substring(0, 8).toUpperCase();
 
-    if (!response.ok) {
-      throw new Error('Failed to generate PDF');
+    // Open the PDF generation URL in a new window
+    const pdfUrl = `/api/returns/generate-pdf?return_id=${state.returnId}&customer_email=${encodeURIComponent(state.customerEmail)}`;
+    const printWindow = window.open(pdfUrl, '_blank');
+
+    if (!printWindow) {
+      alert('Por favor, permita pop-ups para baixar o recibo. Depois clique no botão novamente.');
+    } else {
+      // Show instructions
+      setTimeout(() => {
+        alert('Recibo gerado com sucesso!\n\nUma nova aba foi aberta. Para salvar como PDF:\n\n• Windows/Linux: Pressione Ctrl+P\n• Mac: Pressione Cmd+P\n• Ou use o menu: Arquivo > Imprimir\n\nNa janela de impressão, selecione "Salvar como PDF" como destino.');
+      }, 500);
     }
-
-    // Get HTML content
-    const htmlContent = await response.text();
-
-    // Create a blob from the HTML
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const url = window.URL.createObjectURL(blob);
-
-    // Open in new tab so user can print to PDF
-    const printWindow = window.open(url, '_blank');
-
-    // Alternative: Download as HTML file
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Return_Request_${state.returnId.substring(0, 8).toUpperCase()}.html`;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-
-    // Give user choice: print or download
-    setTimeout(() => {
-      if (confirm('PDF generated! Click OK to open in new tab (then use browser Print > Save as PDF), or Cancel to download as HTML file.')) {
-        // User chose to print - window already opened
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      } else {
-        // User chose to download HTML
-        printWindow?.close();
-        a.click();
-        setTimeout(() => {
-          window.URL.revokeObjectURL(url);
-          document.body.removeChild(a);
-        }, 100);
-      }
-    }, 500);
 
     button.disabled = false;
     button.textContent = 'Download Proof of Request (PDF)';
 
   } catch (error) {
     console.error('PDF generation error:', error);
-    alert('Failed to generate PDF. Please contact support with your reference number.');
+    alert('Falha ao gerar o recibo. Entre em contato com o suporte informando seu número de referência.');
     const button = document.getElementById('downloadPdfBtn');
     button.disabled = false;
     button.textContent = 'Download Proof of Request (PDF)';
