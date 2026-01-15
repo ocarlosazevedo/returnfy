@@ -354,19 +354,91 @@ function viewReturn(returnId) {
         </table>
       </div>
       
-      <!-- Photos -->
-      ${currentReturn.attachments && currentReturn.attachments.length > 0 ? `
-        <div>
-          <h4 style="margin-bottom: 12px; color: #1a1a2e;">Photos</h4>
-          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px;">
-            ${currentReturn.attachments.map(url => `
-              <a href="${url}" target="_blank">
-                <img src="${url}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px;">
-              </a>
-            `).join('')}
-          </div>
+      <!-- Verification Documents -->
+      <div>
+        <h4 style="margin-bottom: 12px; color: #1a1a2e;">Verification Documents</h4>
+        <div style="display: grid; gap: 16px;">
+          ${(() => {
+            const idDocUrl = currentReturn.attachments?.find(url => url.includes('id_document'));
+            const proofAddressUrl = currentReturn.attachments?.find(url => url.includes('proof_of_address'));
+
+            let html = '';
+
+            if (idDocUrl) {
+              const isPDF = idDocUrl.toLowerCase().endsWith('.pdf');
+              html += `
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 8px; color: #666;">ID Document</div>
+                  ${isPDF ? `
+                    <a href="${idDocUrl}" target="_blank" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f0f0f0; border-radius: 8px; text-decoration: none; color: #1a1a2e;">
+                      <div style="font-size: 32px;">📄</div>
+                      <div>
+                        <div style="font-weight: 600; font-size: 14px;">View PDF Document</div>
+                        <div style="font-size: 12px; color: #666;">Click to open in new tab</div>
+                      </div>
+                    </a>
+                  ` : `
+                    <a href="${idDocUrl}" target="_blank">
+                      <img src="${idDocUrl}" style="width: 100%; max-width: 300px; border-radius: 8px; border: 2px solid #e0e0e0;">
+                    </a>
+                  `}
+                </div>
+              `;
+            }
+
+            if (proofAddressUrl) {
+              const isPDF = proofAddressUrl.toLowerCase().endsWith('.pdf');
+              html += `
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 8px; color: #666;">Proof of Address</div>
+                  ${isPDF ? `
+                    <a href="${proofAddressUrl}" target="_blank" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f0f0f0; border-radius: 8px; text-decoration: none; color: #1a1a2e;">
+                      <div style="font-size: 32px;">📄</div>
+                      <div>
+                        <div style="font-weight: 600; font-size: 14px;">View PDF Document</div>
+                        <div style="font-size: 12px; color: #666;">Click to open in new tab</div>
+                      </div>
+                    </a>
+                  ` : `
+                    <a href="${proofAddressUrl}" target="_blank">
+                      <img src="${proofAddressUrl}" style="width: 100%; max-width: 300px; border-radius: 8px; border: 2px solid #e0e0e0;">
+                    </a>
+                  `}
+                </div>
+              `;
+            }
+
+            if (!html) {
+              html = '<div style="color: #999;">No verification documents uploaded</div>';
+            }
+
+            return html;
+          })()}
         </div>
-      ` : ''}
+      </div>
+
+      <!-- Product Photos -->
+      ${(() => {
+        const productPhotos = currentReturn.attachments?.filter(url =>
+          !url.includes('id_document') && !url.includes('proof_of_address')
+        ) || [];
+
+        if (productPhotos.length > 0) {
+          return `
+            <div>
+              <h4 style="margin-bottom: 12px; color: #1a1a2e;">Product Photos</h4>
+              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px;">
+                ${productPhotos.map(url => `
+                  <a href="${url}" target="_blank">
+                    <img src="${url}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px;">
+                  </a>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+        return '';
+      })()}
       
       <!-- Shipping Address -->
       ${form.address ? `
@@ -381,18 +453,6 @@ function viewReturn(returnId) {
         </div>
       ` : ''}
       
-      <!-- Bank Details -->
-      ${form.bank_details ? `
-        <div>
-          <h4 style="margin-bottom: 12px; color: #1a1a2e;">Bank Details (for refund)</h4>
-          <table style="width: 100%; font-size: 14px;">
-            <tr><td style="color: #666; padding: 4px 0;">Bank:</td><td>${form.bank_details.bank_name}</td></tr>
-            <tr><td style="color: #666; padding: 4px 0;">Account Holder:</td><td>${form.bank_details.account_holder}</td></tr>
-            <tr><td style="color: #666; padding: 4px 0;">IBAN:</td><td>${form.bank_details.iban}</td></tr>
-            ${form.bank_details.swift ? `<tr><td style="color: #666; padding: 4px 0;">SWIFT:</td><td>${form.bank_details.swift}</td></tr>` : ''}
-          </table>
-        </div>
-      ` : ''}
       
       <!-- Admin Notes -->
       <div>
