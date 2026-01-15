@@ -841,6 +841,31 @@ body {
 }
 
 /* ===========================================
+   Info Tooltip
+   =========================================== */
+
+.info-tooltip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: background 0.2s;
+}
+
+.info-tooltip:hover {
+  background: var(--accent-hover);
+}
+
+/* ===========================================
    Responsive
    =========================================== */
 
@@ -848,27 +873,27 @@ body {
   .container {
     padding: 16px;
   }
-  
+
   .form-card {
     padding: 24px;
   }
-  
+
   .btn-group {
     flex-direction: column;
   }
-  
+
   .progress-steps {
     display: none;
   }
-  
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .data-table {
     font-size: 13px;
   }
-  
+
   .data-table th,
   .data-table td {
     padding: 10px;

@@ -64,26 +64,40 @@
             <span>12%</span>
           </div>
         </div>
-        
+
         <div class="step-title" data-i18n="step2_title">Identity Verification</div>
         <div class="step-description" data-i18n="step2_desc">Please confirm your identity to proceed with the return request.</div>
-        
+
         <div class="form-group">
           <label class="form-label" data-i18n="fullname_label">Full Name <span class="required">*</span></label>
           <input type="text" class="form-input" id="fullName" required>
         </div>
-        
+
         <div class="form-group">
-          <label class="form-label" data-i18n="document_label">ID Document (CPF/NIF/SSN) <span class="required">*</span></label>
-          <input type="text" class="form-input" id="customerDocument" required>
-          <div class="form-hint" data-i18n="document_hint">Enter your tax identification number</div>
+          <label class="form-label">
+            ID Document <span class="required">*</span>
+            <button type="button" class="info-tooltip" onclick="showDocumentInfo()" title="What document should I attach?">?</button>
+          </label>
+          <input type="text" class="form-input" id="customerDocument" placeholder="e.g., Passport, National ID, Driver's License" required>
+          <div class="form-hint">Enter your government-issued identification number</div>
         </div>
-        
+
+        <div class="form-group">
+          <label class="form-label">Upload ID Document <span class="required">*</span></label>
+          <div class="upload-zone" data-upload="id_document">
+            <div class="upload-icon">📄</div>
+            <div class="upload-text">Click or drag to upload ID document</div>
+          </div>
+          <div class="upload-preview" id="preview_id_document"></div>
+          <div class="form-hint">Upload a clear photo of your passport, national ID, or driver's license</div>
+        </div>
+
         <div class="form-group">
           <label class="form-label" data-i18n="phone_label">Phone Number <span class="required">*</span></label>
           <input type="tel" class="form-input" id="customerPhone" placeholder="+1 (555) 000-0000" required>
+          <div class="form-hint">Must match the phone number registered on your order</div>
         </div>
-        
+
         <div class="btn-group">
           <button class="btn btn-secondary" onclick="goToStep(1)" data-i18n="back">Back</button>
           <button class="btn btn-primary" onclick="validateAndNext(2)" data-i18n="continue">Continue</button>
@@ -294,7 +308,7 @@
         </div>
       </div>
 
-      <!-- Step 7: Shipping Information -->
+      <!-- Step 7: Address Confirmation -->
       <div class="step" id="step-7" style="display:none">
         <div class="progress-container">
           <div class="progress-bar"><div class="progress-fill" style="width: 75%"></div></div>
@@ -303,56 +317,63 @@
             <span>75%</span>
           </div>
         </div>
-        
-        <div class="step-title" data-i18n="step7_title">Shipping Information</div>
-        <div class="step-description" data-i18n="step7_desc">Confirm your address for potential product pickup.</div>
-        
+
+        <div class="step-title">Address Confirmation</div>
+        <div class="step-description">Please confirm your current address and provide proof of residence.</div>
+
         <div class="form-group">
           <label class="form-label" data-i18n="address_label">Full Address <span class="required">*</span></label>
           <input type="text" class="form-input" id="addressLine1" placeholder="Street address" required>
         </div>
-        
+
         <div class="form-group">
           <label class="form-label" data-i18n="address2_label">Address Line 2</label>
           <input type="text" class="form-input" id="addressLine2" placeholder="Apartment, suite, etc.">
         </div>
-        
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
           <div class="form-group">
             <label class="form-label" data-i18n="city_label">City <span class="required">*</span></label>
             <input type="text" class="form-input" id="city" required>
           </div>
-          
+
           <div class="form-group">
             <label class="form-label" data-i18n="state_label">State/Province <span class="required">*</span></label>
             <input type="text" class="form-input" id="state" required>
           </div>
         </div>
-        
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
           <div class="form-group">
             <label class="form-label" data-i18n="zip_label">ZIP/Postal Code <span class="required">*</span></label>
             <input type="text" class="form-input" id="zipCode" required>
           </div>
-          
+
           <div class="form-group">
             <label class="form-label" data-i18n="country_label">Country <span class="required">*</span></label>
             <input type="text" class="form-input" id="country" required>
           </div>
         </div>
-        
+
         <div class="form-group">
-          <label class="form-label" data-i18n="availability_label">Availability for Pickup <span class="required">*</span></label>
-          <select class="form-select" id="pickupAvailability" required>
-            <option value="" data-i18n="select_option">Select...</option>
-            <option value="weekday_morning">Weekdays - Morning (8am-12pm)</option>
-            <option value="weekday_afternoon">Weekdays - Afternoon (12pm-6pm)</option>
-            <option value="weekend_morning">Weekends - Morning (8am-12pm)</option>
-            <option value="weekend_afternoon">Weekends - Afternoon (12pm-6pm)</option>
-            <option value="any">Any time</option>
-          </select>
+          <label class="form-label">Proof of Address <span class="required">*</span></label>
+          <div class="upload-zone" data-upload="proof_of_address">
+            <div class="upload-icon">📄</div>
+            <div class="upload-text">Click or drag to upload proof of address</div>
+          </div>
+          <div class="upload-preview" id="preview_proof_of_address"></div>
+          <div class="form-hint">Upload a valid proof of address from the last 90 days (utility bill, bank statement, rental agreement, etc.)</div>
         </div>
-        
+
+        <div class="form-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="confirmAddress" required>
+            <label class="checkbox-label" for="confirmAddress">
+              I confirm that this is my current residential address and the proof of address document is valid and dated within the last 90 days.
+            </label>
+          </div>
+        </div>
+
         <div class="btn-group">
           <button class="btn btn-secondary" onclick="goToStep(6)" data-i18n="back">Back</button>
           <button class="btn btn-primary" onclick="validateAndNext(7)" data-i18n="continue">Continue</button>
@@ -368,48 +389,33 @@
             <span>87%</span>
           </div>
         </div>
-        
+
         <div class="step-title" data-i18n="step8_title">Resolution Preference</div>
         <div class="step-description" data-i18n="step8_desc">How would you like us to resolve this issue?</div>
-        
+
         <div class="form-group">
           <label class="form-label" data-i18n="resolution_type_label">Preferred Resolution <span class="required">*</span></label>
-          <select class="form-select" id="resolutionType" required onchange="toggleBankDetails()">
+          <select class="form-select" id="resolutionType" required>
             <option value="" data-i18n="select_option">Select...</option>
-            <option value="refund" data-i18n="resolution_refund">Full Refund</option>
+            <option value="refund" data-i18n="resolution_refund">Full Refund (to original payment method)</option>
             <option value="exchange" data-i18n="resolution_exchange">Product Exchange</option>
             <option value="store_credit" data-i18n="resolution_credit">Store Credit</option>
           </select>
         </div>
-        
-        <div id="bankDetailsSection" style="display: none;">
-          <div class="form-group">
-            <label class="form-label" data-i18n="bank_name_label">Bank Name <span class="required">*</span></label>
-            <input type="text" class="form-input" id="bankName">
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label" data-i18n="account_holder_label">Account Holder Name <span class="required">*</span></label>
-            <input type="text" class="form-input" id="accountHolder">
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label" data-i18n="iban_label">IBAN / Account Number <span class="required">*</span></label>
-            <input type="text" class="form-input" id="ibanAccount">
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label" data-i18n="swift_label">SWIFT/BIC Code</label>
-            <input type="text" class="form-input" id="swiftCode">
+
+        <div style="margin-top: 16px; padding: 12px; background: #e7f3ff; border-radius: 8px; border-left: 4px solid #0066cc;">
+          <div style="font-size: 13px; color: #004085; line-height: 1.6;">
+            <strong>Refund Information:</strong><br>
+            If approved, refunds will be processed directly to your original payment method within 5-10 business days. No bank account information is required.
           </div>
         </div>
-        
+
         <div class="form-group">
           <label class="form-label" data-i18n="additional_comments_label">Additional Comments</label>
-          <textarea class="form-textarea" id="additionalComments" 
+          <textarea class="form-textarea" id="additionalComments"
             placeholder="Any additional information you'd like to share..."></textarea>
         </div>
-        
+
         <div class="btn-group">
           <button class="btn btn-secondary" onclick="goToStep(7)" data-i18n="back">Back</button>
           <button class="btn btn-primary" onclick="validateAndNext(8)" data-i18n="continue">Continue</button>
@@ -430,32 +436,59 @@
         <div class="step-description" data-i18n="step9_desc">Please read and accept our return policy.</div>
         
         <div class="terms-box" id="termsBox">
-          <h4>Return Policy Agreement</h4>
+          <h4>Return & Exchange Policy Agreement</h4>
           <p>By submitting this return request, you acknowledge and agree to the following terms and conditions:</p>
-          
-          <p><strong>1. Eligibility</strong><br>
-          Products must be returned within 30 days of delivery. Items must be in their original condition, with all tags and packaging intact. Products that have been damaged through misuse, neglect, or unauthorized modifications are not eligible for return.</p>
-          
-          <p><strong>2. Inspection Process</strong><br>
-          All returned items will undergo a thorough inspection upon receipt. This process may take 5-10 business days. We reserve the right to reject returns that do not meet our return criteria or appear to have been used beyond reasonable inspection.</p>
-          
-          <p><strong>3. Refund Processing</strong><br>
-          Approved refunds will be processed within 14 business days after inspection completion. Refunds will be issued to the original payment method. Shipping costs are non-refundable unless the return is due to our error.</p>
-          
-          <p><strong>4. Exchange Policy</strong><br>
-          Exchanges are subject to product availability. If the requested exchange item is unavailable, a refund will be issued instead. Additional shipping charges may apply for exchanges.</p>
-          
-          <p><strong>5. Fraudulent Claims</strong><br>
-          Submitting false or misleading information in a return request is prohibited and may result in denial of current and future return requests, account suspension, and potential legal action.</p>
-          
-          <p><strong>6. Data Usage</strong><br>
-          Information provided in this form will be used solely for processing your return request and improving our services. We may retain this information for record-keeping purposes in accordance with applicable laws.</p>
-          
-          <p><strong>7. Limitation of Liability</strong><br>
-          Our liability is limited to the purchase price of the returned product. We are not responsible for any indirect, incidental, or consequential damages arising from the use or inability to use our products.</p>
-          
-          <p><strong>8. Governing Law</strong><br>
-          This agreement shall be governed by and construed in accordance with applicable consumer protection laws. Any disputes shall be resolved through appropriate legal channels.</p>
+
+          <p><strong>1. Return Period Eligibility</strong><br>
+          Return and exchange requests MUST be submitted within 14 calendar days from the date you received your order. Orders received more than 14 days before the request date are NOT eligible for return, exchange, or refund under any circumstances. This 14-day period is strictly enforced to ensure fair processing of all customer requests.</p>
+
+          <p><strong>2. Product Condition Requirements</strong><br>
+          Products must be returned in their original, unused condition to be eligible for refund or exchange. This means:<br>
+          • The product must NOT have been used, worn, washed, or altered in any way<br>
+          • All original tags, labels, and packaging must be intact and undamaged<br>
+          • The product must NOT show any signs of wear, damage, or modification<br>
+          • All accessories, manuals, and components must be included<br>
+          • The product must NOT have been exposed to water, chemicals, or other substances<br>
+          Products that fail to meet these conditions will be rejected and returned to you at your expense.</p>
+
+          <p><strong>3. Ineligible Products</strong><br>
+          The following products are NOT eligible for return or exchange:<br>
+          • Products that have been violated, damaged, used, or show signs of wear<br>
+          • Products with broken seals or missing original packaging<br>
+          • Products that have been modified, repaired, or altered in any way<br>
+          • Products purchased more than 14 days before the return request date<br>
+          • Clearance, final sale, or specially discounted items (unless defective upon arrival)</p>
+
+          <p><strong>4. Inspection Process</strong><br>
+          All returned items undergo a comprehensive inspection upon receipt. Our team will verify that products meet all condition requirements listed above. This inspection process may take 5-10 business days. We reserve the right to reject returns that do not meet our strict return criteria. Rejected returns will be shipped back to you, and you will be responsible for all return shipping costs.</p>
+
+          <p><strong>5. Refund & Exchange Processing</strong><br>
+          • <strong>Refunds:</strong> Approved refunds will be processed directly to your original payment method within 5-10 business days after inspection approval. Original shipping costs are non-refundable unless the return is due to our error (defective product, wrong item shipped).<br>
+          • <strong>Exchanges:</strong> Product exchanges are subject to inventory availability. If your requested exchange item is unavailable, a full refund will be issued instead. We will cover shipping costs for approved exchanges due to our error; otherwise, you are responsible for return shipping.<br>
+          • <strong>Store Credit:</strong> Store credit will be issued within 3-5 business days and can be used for future purchases.</p>
+
+          <p><strong>6. Required Documentation</strong><br>
+          You must provide valid proof of address (dated within the last 90 days) and government-issued identification. Failure to provide these documents will result in automatic denial of your return request.</p>
+
+          <p><strong>7. Fraudulent Claims & Misrepresentation</strong><br>
+          Submitting false or misleading information in a return request is strictly prohibited and constitutes fraud. This includes but is not limited to:<br>
+          • Falsely claiming a product is defective when it is not<br>
+          • Providing altered or manipulated photos<br>
+          • Using someone else's identity or documents<br>
+          • Claiming non-receipt when product was delivered<br>
+          Such actions may result in immediate denial of your request, permanent account suspension, legal action, and reporting to relevant authorities.</p>
+
+          <p><strong>8. Data Privacy & Usage</strong><br>
+          Information provided in this form, including personal documents and photos, will be used solely for processing your return request, fraud prevention, and improving our services. We maintain strict confidentiality and comply with all applicable data protection regulations. Your information may be retained for record-keeping and legal compliance purposes.</p>
+
+          <p><strong>9. Limitation of Liability</strong><br>
+          Our liability is strictly limited to the purchase price of the returned product. We are not responsible for any indirect, incidental, consequential, or punitive damages arising from product use, return delays, or denied returns.</p>
+
+          <p><strong>10. Final Decision Authority</strong><br>
+          We reserve the right to make the final decision on all return and exchange requests. Our decision is based on the information and evidence you provide, product inspection results, and compliance with this policy. All decisions are final and not subject to appeal.</p>
+
+          <p><strong>11. Governing Law</strong><br>
+          This agreement is governed by applicable consumer protection laws in the jurisdiction where the product was shipped. By submitting this request, you agree to resolve any disputes through appropriate legal channels in that jurisdiction.</p>
         </div>
         
         <div class="checkbox-group" style="margin-bottom: 24px;">
@@ -517,6 +550,30 @@
           <div style="margin-top: 24px; padding: 16px; background: #f8f9fa; border-radius: 8px;">
             <div style="font-size: 13px; color: #666;" data-i18n="reference_number">Reference Number:</div>
             <div style="font-size: 18px; font-weight: 700; color: #1a1a2e;" id="referenceNumber">-</div>
+          </div>
+          <div class="btn-group" style="margin-top: 24px;">
+            <button class="btn btn-primary" onclick="downloadPDF()" id="downloadPdfBtn">Download Proof of Request (PDF)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Out of Period State -->
+      <div class="step" id="step-out-of-period" style="display:none">
+        <div class="success-screen">
+          <div class="success-icon" style="background: #dc3545;">✗</div>
+          <div class="success-title" style="color: #dc3545;">Return Period Expired</div>
+          <div class="success-message">
+            Unfortunately, your order was received more than 14 days ago and is outside our return and exchange period.
+            According to our return policy, we can only process returns for orders received within 14 days of the request date.
+          </div>
+          <div style="margin-top: 24px; padding: 16px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+            <div style="font-size: 14px; color: #856404; line-height: 1.6;">
+              <strong>Return Policy:</strong><br>
+              Returns and exchanges must be requested within 14 days of delivery. Products must be in original condition, unused, and with all original packaging.
+            </div>
+          </div>
+          <div class="btn-group" style="margin-top: 24px;">
+            <button class="btn btn-secondary" onclick="location.reload()">Return to Home</button>
           </div>
         </div>
       </div>

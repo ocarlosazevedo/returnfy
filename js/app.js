@@ -17,10 +17,13 @@ const state = {
     product_back: null,
     defect: null,
     packaging: null,
-    label: null
+    label: null,
+    id_document: null,
+    proof_of_address: null
   },
   signature: null,
-  startTime: Date.now()
+  startTime: Date.now(),
+  returnId: null
 };
 
 // ===========================================
@@ -125,21 +128,46 @@ function validateStep(step) {
       const fullName = document.getElementById('fullName').value.trim();
       const document_ = document.getElementById('customerDocument').value.trim();
       const phone = document.getElementById('customerPhone').value.trim();
-      
+
       if (!fullName || !document_ || !phone) {
         alert('Please fill in all required fields.');
         return false;
       }
+
+      if (!state.uploads.id_document) {
+        alert('Please upload your ID document.');
+        return false;
+      }
+
+      // Verify phone matches Shopify order
+      const orderPhone = state.selectedOrder.customer_phone;
+      if (orderPhone && phone !== orderPhone) {
+        alert('The phone number you entered does not match the phone number on your order. Please use the exact phone number from your order.');
+        return false;
+      }
+
       return true;
       
     case 3: // Order confirmation
       const receiveDate = document.getElementById('receiveDate').value;
       const confirmOrder = document.getElementById('confirmOrder').checked;
-      
+
       if (!receiveDate || !confirmOrder) {
         alert('Please confirm the order details.');
         return false;
       }
+
+      // Check if received date is within 14 days
+      const receivedDate = new Date(receiveDate);
+      const today = new Date();
+      const daysDifference = Math.floor((today - receivedDate) / (1000 * 60 * 60 * 24));
+
+      if (daysDifference > 14) {
+        // Show out of period screen
+        goToStep('out-of-period');
+        return false;
+      }
+
       return true;
       
     case 4: // Return reason
@@ -177,38 +205,40 @@ function validateStep(step) {
       }
       return true;
       
-    case 7: // Shipping
+    case 7: // Address confirmation
       const address = document.getElementById('addressLine1').value.trim();
       const city = document.getElementById('city').value.trim();
       const stateVal = document.getElementById('state').value.trim();
       const zip = document.getElementById('zipCode').value.trim();
       const country = document.getElementById('country').value.trim();
-      const availability = document.getElementById('pickupAvailability').value;
-      
-      if (!address || !city || !stateVal || !zip || !country || !availability) {
+      const confirmAddress = document.getElementById('confirmAddress').checked;
+
+      if (!address || !city || !stateVal || !zip || !country) {
         alert('Please fill in all address fields.');
         return false;
       }
+
+      if (!state.uploads.proof_of_address) {
+        alert('Please upload your proof of address document.');
+        return false;
+      }
+
+      if (!confirmAddress) {
+        alert('Please confirm that your address information is accurate.');
+        return false;
+      }
+
       return true;
       
     case 8: // Resolution
       const resolutionType = document.getElementById('resolutionType').value;
-      
+
       if (!resolutionType) {
         alert('Please select your preferred resolution.');
         return false;
       }
-      
-      if (resolutionType === 'refund') {
-        const bankName = document.getElementById('bankName').value.trim();
-        const accountHolder = document.getElementById('accountHolder').value.trim();
-        const iban = document.getElementById('ibanAccount').value.trim();
-        
-        if (!bankName || !accountHolder || !iban) {
-          alert('Please provide your bank details for refund.');
-          return false;
-        }
-      }
+
+      // No bank details needed anymore - refunds go to original payment method
       return true;
       
     default:
@@ -476,18 +506,29 @@ function removeUpload(uploadKey) {
 }
 
 // ===========================================
-// Bank Details Toggle
+// Document Info Tooltip
 // ===========================================
 
-function toggleBankDetails() {
-  const resolutionType = document.getElementById('resolutionType').value;
-  const bankSection = document.getElementById('bankDetailsSection');
-  
-  if (resolutionType === 'refund') {
-    bankSection.style.display = 'block';
-  } else {
-    bankSection.style.display = 'none';
-  }
+function showDocumentInfo() {
+  alert(`Accepted ID Documents:
+
+For European Union residents:
+• National ID Card
+• Passport
+• Driver's License (EU format)
+
+For United States residents:
+• Passport
+• State-issued ID Card
+• Driver's License
+• Military ID
+
+For United Kingdom residents:
+• Passport
+• Driving Licence (photocard)
+• National Identity Card
+
+Important: The document must be valid (not expired) and show your full name and photo clearly. Please upload a high-quality photo or scan of your document.`);
 }
 
 // ===========================================
@@ -590,37 +631,37 @@ async function submitReturn() {
   const terms1 = document.getElementById('acceptTerms1').checked;
   const terms2 = document.getElementById('acceptTerms2').checked;
   const terms3 = document.getElementById('acceptTerms3').checked;
-  
+
   if (!terms1 || !terms2 || !terms3) {
     alert('Please accept all terms and conditions.');
     return;
   }
-  
+
   if (!state.signature) {
     alert('Please provide your digital signature.');
     return;
   }
-  
+
   // Collect all form data
   const formData = {
     // Identity
     full_name: document.getElementById('fullName').value.trim(),
     document: document.getElementById('customerDocument').value.trim(),
     phone: document.getElementById('customerPhone').value.trim(),
-    
+
     // Order confirmation
     receive_date: document.getElementById('receiveDate').value,
-    
+
     // Return reason
     reason: document.getElementById('returnReason').value,
     description: document.getElementById('returnDescription').value.trim(),
-    
+
     // Problem details
     when_noticed: document.getElementById('whenNoticed').value,
     tried_resolve: document.getElementById('triedResolve').value,
     resolution_attempts: document.getElementById('resolutionAttempts').value.trim(),
     product_used: document.getElementById('productUsed').value,
-    
+
     // Shipping
     address: {
       line1: document.getElementById('addressLine1').value.trim(),
@@ -630,32 +671,25 @@ async function submitReturn() {
       zip: document.getElementById('zipCode').value.trim(),
       country: document.getElementById('country').value.trim()
     },
-    pickup_availability: document.getElementById('pickupAvailability').value,
-    
+
     // Resolution
     resolution_type: document.getElementById('resolutionType').value,
-    bank_details: document.getElementById('resolutionType').value === 'refund' ? {
-      bank_name: document.getElementById('bankName').value.trim(),
-      account_holder: document.getElementById('accountHolder').value.trim(),
-      iban: document.getElementById('ibanAccount').value.trim(),
-      swift: document.getElementById('swiftCode').value.trim()
-    } : null,
     additional_comments: document.getElementById('additionalComments').value.trim(),
-    
+
     // Signature
     signature: state.signature
   };
-  
+
   // Show loading
   goToStep('loading');
-  
+
   // Fake processing delay (more friction)
   await new Promise(resolve => setTimeout(resolve, 5000));
-  
+
   try {
     const order = state.selectedOrder;
     const timeSpent = Math.floor((Date.now() - state.startTime) / 1000);
-    
+
     const response = await fetch('/api/returns', {
       method: 'POST',
       headers: {
@@ -677,21 +711,71 @@ async function submitReturn() {
         time_spent_seconds: timeSpent
       })
     });
-    
+
     const data = await response.json();
-    
+
     if (!response.ok) {
       throw new Error(data.error || 'Failed to submit return request');
     }
-    
+
+    // Store return ID for PDF generation
+    state.returnId = data.return_id;
+
     // Show success
     document.getElementById('referenceNumber').textContent = data.return_id.substring(0, 8).toUpperCase();
     goToStep('success');
-    
+
   } catch (error) {
     console.error('Submit error:', error);
     alert('An error occurred. Please try again.');
     goToStep(9);
+  }
+}
+
+// ===========================================
+// PDF Generation
+// ===========================================
+
+async function downloadPDF() {
+  try {
+    const button = document.getElementById('downloadPdfBtn');
+    button.disabled = true;
+    button.textContent = 'Generating PDF...';
+
+    const response = await fetch('/api/returns/generate-pdf', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        return_id: state.returnId,
+        customer_email: state.customerEmail
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to generate PDF');
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Return_Request_${state.returnId.substring(0, 8).toUpperCase()}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+
+    button.disabled = false;
+    button.textContent = 'Download Proof of Request (PDF)';
+
+  } catch (error) {
+    console.error('PDF generation error:', error);
+    alert('Failed to generate PDF. Please contact support with your reference number.');
+    const button = document.getElementById('downloadPdfBtn');
+    button.disabled = false;
+    button.textContent = 'Download Proof of Request (PDF)';
   }
 }
 
